@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, HtmlHTMLAttributes } from "react";
 import "./TodoListApp.css";
 
 interface Todo {
@@ -15,7 +15,9 @@ const TodoListApp: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>(initialTodos);
   const [newTodo, setNewTodo] = useState<string>("");
   const [title, setTitle] = useState<string>("");
+
   const [searchTerm, setSearchTerm] = useState<string>("");
+  /* upload img */
 
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
@@ -56,7 +58,13 @@ const TodoListApp: React.FC = () => {
         placeholder="Search by title"
       />
       <div className="input-container">
-        <div style={{gap: "10px", alignItems: "center", justifyContent: "center"}}>
+        <div
+          style={{
+            gap: "10px",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <input
             autoFocus
             className="input"
@@ -81,10 +89,19 @@ const TodoListApp: React.FC = () => {
 
       <div className="parent">
         {filteredTodos.map((todo) => (
-          <div key={todo.id} className={todo.isCompleted ? "completed" : ""} id="item">
+          <div
+            key={todo.id}
+            className={todo.isCompleted ? "completed" : ""}
+            id="item"
+          >
             <div className="div-option">
               <h3>{todo.Title}</h3>
-              <button className="delete-button" onClick={() => deleteTodo(todo.id)}>Delete</button>
+              <button
+                className="delete-button"
+                onClick={() => deleteTodo(todo.id)}
+              >
+                Delete
+              </button>
             </div>
             <span>{todo.text}</span>
           </div>
