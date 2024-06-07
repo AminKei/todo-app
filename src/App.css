@@ -1,0 +1,44 @@
+.navbar {
+  justify-content: center;
+  gap: 350px;
+  align-items: center;
+  display: flex;
+}
+.input-button-theme {
+  gap: 201px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+.input-search{
+  border: none;
+  border-bottom: #222229 solid 2px;
+  width: 500px;
+  padding: 15px;
+  padding-left: 2px;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  right: -70vh;
+  top: -7vh;
+  outline: none;
+  background-color: transparent;
+}
+.buttonTheme {
+  border: none;
+  outline: none;
+  padding: 20px 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-weight: bold;
+  background-color: #222229;
+}
+
+@media only screen and (max-width:1100px) {
+  .navbar{
+    gap: 10px;
+    width: 100%;
+  }
+}
