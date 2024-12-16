@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-
 import {
   Button,
   Card,
@@ -18,6 +17,7 @@ interface Todo {
   text: string;
   Title: string;
   isCompleted: boolean;
+  liked: boolean; // New liked property
 }
 
 function App() {
@@ -27,8 +27,9 @@ function App() {
   const [todos, setTodos] = useState<Todo[]>(initialTodos);
   const [newTodo, setNewTodo] = useState<string>("");
   const [title, setTitle] = useState<string>("");
-
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [likedFilter, setLikedFilter] = useState<boolean>(false); // New state for liked filter
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
@@ -41,7 +42,12 @@ function App() {
         text: newTodo,
         Title: title,
         isCompleted: false,
+        liked: false, // Default liked value
       };
+      if (title.length > 14) {
+        alert("Title must be less than 20 characters");
+        return;
+      }
       setTodos([...todos, newTodoItem]);
       setNewTodo("");
       setTitle("");
@@ -55,13 +61,18 @@ function App() {
     setTodos(updatedTodos);
   };
 
-  const filteredTodos = todos.filter((todo) =>
-    todo.Title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const toggleLiked = (id: number) => {
+    const updatedTodos = todos.map((todo) =>
+      todo.id === id ? { ...todo, liked: !todo.liked } : todo
+    );
+    setTodos(updatedTodos);
+  };
 
-  /* modal */
-
-  const [show, setShow] = useState(false);
+  const filteredTodos = todos
+    .filter((todo) => (likedFilter ? todo.liked : true)) // Apply liked filter
+    .filter((todo) =>
+      todo.Title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -69,14 +80,13 @@ function App() {
   return (
     <div style={{ padding: "20px" }}>
       <Navbar
-        className="mb-3 "
+        className="mb-3"
         style={{ borderBottom: "solid 1px black", paddingBottom: "20px" }}
       >
         <Container fluid>
           <Navbar.Brand href="#" style={{ fontSize: "18px" }}>
             Todo App
           </Navbar.Brand>
-
           <Navbar.Toggle aria-controls={`offcanvasNavbar-expand`} />
           <Navbar.Offcanvas
             id={`offcanvasNavbar-expand`}
@@ -89,8 +99,12 @@ function App() {
                   title="Filter by :"
                   id={`offcanvasNavbarDropdown-expand`}
                 >
-                  <NavDropdown.Item href="#action3">Liked</NavDropdown.Item>
-                  <NavDropdown.Item href="#action4">Alarm</NavDropdown.Item>
+                  <NavDropdown.Item onClick={() => setLikedFilter(false)}>
+                    All
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={() => setLikedFilter(true)}>
+                    Liked
+                  </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item href="#action5">
                     Something else here
@@ -104,6 +118,7 @@ function App() {
           </Button>
         </Container>
       </Navbar>
+
       <Form.Control
         type="text"
         value={searchTerm}
@@ -125,7 +140,7 @@ function App() {
           />
           <Form.Control
             as="textarea"
-            placeholder="Discription"
+            placeholder="Description"
             value={newTodo}
             onChange={(e) => setNewTodo(e.target.value)}
           />
@@ -143,56 +158,31 @@ function App() {
       <div className="container2">
         {filteredTodos.map((todo) => (
           <Card
-            style={{
-              overflowY: "scroll",
-              height: "250px",
-              position: "relative",
-            }}
+            key={todo.id}
+            style={{ position: "relative", margin: "10px 0" }}
           >
             <Card.Body>
-              <Card.Title  style={{justifyContent:"space-between", display:"flex", alignItems:"center", fontSize:"18px"}}> 
-                Title : {todo.Title}{" "}
+              <Card.Title
+                style={{
+                  justifyContent: "space-between",
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "18px",
+                }}
+              >
+                Title: {todo.Title}{" "}
                 <Button variant="link" onClick={() => deleteTodo(todo.id)}>
                   <img
                     src={`${process.env.PUBLIC_URL}/Icons/trash.png`}
-                    alt=""
+                    alt="Delete"
                   />
+                </Button>
+                <Button variant="link" onClick={() => toggleLiked(todo.id)}>
+                  <input type="checkbox" />
                 </Button>
               </Card.Title>
               <hr />
-              <Card.Text style={{fontSize:"12px"}}>{todo.text}</Card.Text>
-              {/* <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  borderTop: "solid 1px gray",
-                  bottom: "0px",
-                  width: "90%",
-                  background: "white",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Button variant="link">
-                    <img
-                      src={`${process.env.PUBLIC_URL}/Icons/heart.png`}
-                      alt=""
-                    />
-                  </Button>
-                  <Button variant="link">
-                    <img
-                      src={`${process.env.PUBLIC_URL}/Icons/send.png`}
-                      alt=""
-                    />
-                  </Button>
-                </div>
-              </div> */}
+              <Card.Text style={{ fontSize: "12px" }}>{todo.text}</Card.Text>
             </Card.Body>
           </Card>
         ))}

@@ -32,32 +32,20 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
-
 body {
   --sb-track-color: #232e3300;
-  --sb-thumb-color:  #F8C620;
+  --sb-thumb-color: #f8c620;
   --sb-size: 5px;
 }
 
 body::-webkit-scrollbar {
-  width: var(--sb-size)
-}
-
-body::-webkit-scrollbar-track {
-  background: var(--sb-track-color);
-  border-radius: 10px;
+  width: var(--sb-size);
 }
 
 body::-webkit-scrollbar-thumb {
   background: var(--sb-thumb-color);
   border-radius: 10px;
-  
 }
-
-
-
-
 
 @media only screen and (max-width: 1300px) {
   .container2 {
