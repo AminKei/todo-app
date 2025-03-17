@@ -11,6 +11,7 @@ import {
   NavDropdown,
   Offcanvas,
 } from "react-bootstrap";
+import NotItems from "./Components/NotItems/NotItems";
 
 interface Todo {
   id: number;
@@ -152,6 +153,7 @@ function App() {
       </Modal>
 
       <div className="container2">
+        {todos.length === 0 && <NotItems />}
         {filteredTodos.map((todo) => (
           <Card
             key={todo.id}
@@ -170,7 +172,7 @@ function App() {
                 <p style={{ width: "80%" }}>{todo.Title} </p>
                 <Button
                   variant="warning"
-                  style={{ display: "flex", gap: "10px" }}
+                  style={{ display: "flex", gap: "10px", alignItems: "center" }}
                   onClick={() => deleteTodo(todo.id)}
                 >
                   <img
@@ -185,7 +187,7 @@ function App() {
                 style={{
                   fontSize: "12px",
                   overflowY: "scroll",
-                  height: "250px",
+                  height: "200px",
                 }}
               >
                 {todo.text}

@@ -66,6 +66,14 @@ body::-webkit-scrollbar-thumb {
   transition: all 1s;
 }
 
+.button-add{
+  position: static;
+  display: flex;
+  justify-content: center;
+  width: 160px;
+  font-size: 10px;
+  height: 40px;
+}
 @media only screen and (max-width: 1300px) {
   .container2 {
     grid-template-columns: repeat(4, 1fr);
@@ -92,4 +100,5 @@ body::-webkit-scrollbar-thumb {
   .item-todo {
     width: 100%;
   }
+
 }
