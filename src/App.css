@@ -47,6 +47,25 @@ body::-webkit-scrollbar-thumb {
   border-radius: 10px;
 }
 
+.option-card {
+  position: relative;
+  left: 0;
+  display: none;
+  height: 40px;
+  border-top: black solid 1px;
+  backdrop-filter: blur(10px);
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  transition: all 1s;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+.card-item:hover .option-card {
+  display: flex;
+  transition: all 1s;
+}
+
 @media only screen and (max-width: 1300px) {
   .container2 {
     grid-template-columns: repeat(4, 1fr);

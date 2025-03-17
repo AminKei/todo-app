@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import {
   Button,
@@ -17,7 +17,7 @@ interface Todo {
   text: string;
   Title: string;
   isCompleted: boolean;
-  liked: boolean; // New liked property
+  liked: boolean;
 }
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
   const [newTodo, setNewTodo] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [likedFilter, setLikedFilter] = useState<boolean>(false); // New state for liked filter
+  const [likedFilter, setLikedFilter] = useState<boolean>(false);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -42,10 +42,12 @@ function App() {
         text: newTodo,
         Title: title,
         isCompleted: false,
-        liked: false, // Default liked value
+        liked: false,
       };
-      if (title.length > 14) {
-        alert("Title must be less than 20 characters");
+      if (title.length < 5 && title.length > 10) {
+        alert(
+          "Title must be less than 5 characters and more than 10 characters"
+        );
         return;
       }
       setTodos([...todos, newTodoItem]);
@@ -61,15 +63,8 @@ function App() {
     setTodos(updatedTodos);
   };
 
-  const toggleLiked = (id: number) => {
-    const updatedTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, liked: !todo.liked } : todo
-    );
-    setTodos(updatedTodos);
-  };
-
   const filteredTodos = todos
-    .filter((todo) => (likedFilter ? todo.liked : true)) // Apply liked filter
+    .filter((todo) => (likedFilter ? todo.liked : true))
     .filter((todo) =>
       todo.Title.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -137,6 +132,7 @@ function App() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
+            maxLength={28}
           />
           <Form.Control
             as="textarea"
@@ -167,22 +163,33 @@ function App() {
                   justifyContent: "space-between",
                   display: "flex",
                   alignItems: "center",
-                  fontSize: "18px",
+                  fontSize: "12px",
+                  height: "20px",
                 }}
               >
-                Title: {todo.Title}{" "}
-                <Button variant="link" onClick={() => deleteTodo(todo.id)}>
+                <p style={{ width: "80%" }}>{todo.Title} </p>
+                <Button
+                  variant="warning"
+                  style={{ display: "flex", gap: "10px" }}
+                  onClick={() => deleteTodo(todo.id)}
+                >
                   <img
-                    src={`${process.env.PUBLIC_URL}/Icons/trash.png`}
-                    alt="Delete"
+                    src="https://cdn-icons-png.flaticon.com/512/1206/1206462.png"
+                    width={20}
+                    alt=""
                   />
-                </Button>
-                <Button variant="link" onClick={() => toggleLiked(todo.id)}>
-                  <input type="checkbox" />
                 </Button>
               </Card.Title>
               <hr />
-              <Card.Text style={{ fontSize: "12px" }}>{todo.text}</Card.Text>
+              <Card.Text
+                style={{
+                  fontSize: "12px",
+                  overflowY: "scroll",
+                  height: "250px",
+                }}
+              >
+                {todo.text}
+              </Card.Text>
             </Card.Body>
           </Card>
         ))}
