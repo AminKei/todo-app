@@ -6,7 +6,6 @@
   grid-template-rows: repeat(5, 1fr);
   column-gap: 20px;
   row-gap: 20px;
-  border-top: solid 1px rgb(190, 190, 190);
   padding-top: 10px;
   margin-top: 3vh;
 }
@@ -66,13 +65,23 @@ body::-webkit-scrollbar-thumb {
   transition: all 1s;
 }
 
-.button-add{
+.button-add {
   position: static;
   display: flex;
   justify-content: center;
   width: 160px;
   font-size: 10px;
   height: 40px;
+}
+.searcbar {
+  position: relative;
+}
+.button-add {
+  font-size: 12px;
+  padding: 10px 1px 10px 1px;
+  border-radius: 5px;
+  background-color: #f8c620;
+  font-weight: bolder;
 }
 @media only screen and (max-width: 1300px) {
   .container2 {
@@ -83,6 +92,11 @@ body::-webkit-scrollbar-thumb {
   }
   .button-add {
     display: block;
+  }
+  .searcbar {
+    position: absolute;
+    top: 80px;
+    left: 0px;
   }
 }
 @media only screen and (max-width: 950px) {
@@ -100,5 +114,4 @@ body::-webkit-scrollbar-thumb {
   .item-todo {
     width: 100%;
   }
-
 }

@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-import "./App.css";
 import {
   Button,
   Card,
@@ -10,74 +8,47 @@ import {
   Navbar,
   NavDropdown,
   Offcanvas,
+  Dropdown,
 } from "react-bootstrap";
 import NotItems from "./Components/NotItems/NotItems";
-
-interface Todo {
-  id: number;
-  text: string;
-  Title: string;
-  isCompleted: boolean;
-  liked: boolean;
-}
+import "./App.css";
+import useTodos from "./Hooks/useTodo";
 
 function App() {
-  const initialTodos: Todo[] = JSON.parse(
-    localStorage.getItem("todos") || "[]"
-  );
-  const [todos, setTodos] = useState<Todo[]>(initialTodos);
-  const [newTodo, setNewTodo] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [likedFilter, setLikedFilter] = useState<boolean>(false);
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
-
-  const addTodo = () => {
-    if (newTodo.trim() !== "" && title.trim() !== "") {
-      const newTodoItem: Todo = {
-        id: todos.length + 1,
-        text: newTodo,
-        Title: title,
-        isCompleted: false,
-        liked: false,
-      };
-      if (title.length < 5 && title.length > 10) {
-        alert(
-          "Title must be less than 5 characters and more than 10 characters"
-        );
-        return;
-      }
-      setTodos([...todos, newTodoItem]);
-      setNewTodo("");
-      setTitle("");
-    } else {
-      alert("Please complete all fields");
-    }
-  };
-
-  const deleteTodo = (id: number) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
-  };
-
-  const filteredTodos = todos
-    .filter((todo) => (likedFilter ? todo.liked : true))
-    .filter((todo) =>
-      todo.Title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const {
+    todos,
+    newTodo,
+    title,
+    searchTerm,
+    likedFilter,
+    completedFilter,
+    show,
+    setNewTodo,
+    setTitle,
+    setSearchTerm,
+    setLikedFilter,
+    setCompletedFilter,
+    handleClose,
+    handleShow,
+    addTodo,
+    filteredTodos,
+    toggleLike,
+    toggleComplete,
+    deleteTodo,
+    isRTLText,
+  } = useTodos();
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "15px" }}>
       <Navbar
         className="mb-3"
-        style={{ borderBottom: "solid 1px black", paddingBottom: "20px" }}
+        style={{
+          borderBottom: "solid 1px gray",
+          justifyContent: "center",
+          display: "flex",
+          alignItems: "center",
+          paddingBottom: "20px",
+        }}
       >
         <Container fluid>
           <Navbar.Brand href="#" style={{ fontSize: "18px" }}>
@@ -90,38 +61,52 @@ function App() {
             placement="end"
           >
             <Offcanvas.Body>
-              <Nav className="justify-content-end flex-grow-1 pe-3">
+              <Nav className="justify-content-end flex-grow-1 pe-4 ps-4">
+                <Form.Control
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by title"
+                  className="searcbar"
+                  style={{ width: "350px" }}
+                />
                 <NavDropdown
                   title="Filter by :"
                   id={`offcanvasNavbarDropdown-expand`}
                 >
-                  <NavDropdown.Item onClick={() => setLikedFilter(false)}>
+                  <NavDropdown.Item
+                    onClick={() => {
+                      setLikedFilter(false);
+                      setCompletedFilter(false);
+                    }}
+                  >
                     All
                   </NavDropdown.Item>
-                  <NavDropdown.Item onClick={() => setLikedFilter(true)}>
+                  <NavDropdown.Item
+                    onClick={() => {
+                      setLikedFilter(true);
+                      setCompletedFilter(false);
+                    }}
+                  >
                     Liked
                   </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action5">
-                    Something else here
+                  <NavDropdown.Item
+                    onClick={() => {
+                      setLikedFilter(false);
+                      setCompletedFilter(true);
+                    }}
+                  >
+                    Completed
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
-          <Button variant="warning" onClick={handleShow} size="sm">
-            + Add new Note
-          </Button>
+          <button onClick={handleShow} className="button-add">
+            + Add New Notes
+          </button>
         </Container>
       </Navbar>
-
-      <Form.Control
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search by title"
-        style={{ width: "100%" }}
-      />
 
       <Modal centered show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -154,40 +139,76 @@ function App() {
 
       <div className="container2">
         {todos.length === 0 && <NotItems />}
-        {filteredTodos.map((todo) => (
+        {filteredTodos.map((todo: any) => (
           <Card
             key={todo.id}
-            style={{ position: "relative", margin: "10px 0" }}
+            style={{
+              position: "relative",
+              margin: "10px 0",
+              marginTop: "30px",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+              borderRadius: "12px",
+              border: "none",
+              backgroundColor: "#fff",
+              transition: "transform 0.2s ease-in-out",
+              cursor: "pointer",
+            }}
           >
-            <Card.Body>
+            <Card.Body style={{ padding: "20px" }}>
               <Card.Title
                 style={{
                   justifyContent: "space-between",
                   display: "flex",
                   alignItems: "center",
-                  fontSize: "12px",
-                  height: "20px",
+                  fontSize: "14px",
+                  height: "auto",
+                  marginBottom: "15px",
+                  gap: "6px",
                 }}
               >
-                <p style={{ width: "80%" }}>{todo.Title} </p>
-                <Button
-                  variant="warning"
-                  style={{ display: "flex", gap: "10px", alignItems: "center" }}
-                  onClick={() => deleteTodo(todo.id)}
+                <p
+                  style={{
+                    width: "80%",
+                    margin: "0",
+                    fontWeight: "600",
+                    color: "#2c3e50",
+                    textDecoration: todo.isCompleted ? "line-through" : "none",
+                    direction: isRTLText(todo.Title) ? "rtl" : "ltr",
+                  }}
                 >
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/1206/1206462.png"
-                    width={20}
-                    alt=""
-                  />
-                </Button>
+                  {todo.Title}
+                </p>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    variant="light"
+                    id="dropdown-basic"
+                  ></Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => toggleLike(todo.id)}>
+                      {todo.liked ? "❤️ Unlike" : "🤍 Like"}
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => toggleComplete(todo.id)}>
+                      {todo.isCompleted
+                        ? "✓ Mark Incomplete"
+                        : "○ Mark Complete"}
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => deleteTodo(todo.id)}>
+                      🗑️ Delete
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </Card.Title>
-              <hr />
+              <hr style={{ margin: "10px 0", opacity: "0.2" }} />
               <Card.Text
                 style={{
-                  fontSize: "12px",
-                  overflowY: "scroll",
+                  fontSize: "13px",
+                  lineHeight: "1.6",
+                  color: "#555",
+                  overflowY: "auto",
                   height: "200px",
+                  padding: "10px 5px",
+                  textDecoration: todo.isCompleted ? "line-through" : "none",
+                  direction: isRTLText(todo.text) ? "rtl" : "ltr",
                 }}
               >
                 {todo.text}
