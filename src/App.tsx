@@ -38,10 +38,16 @@ function App() {
     isRTLText,
   } = useTodos();
 
+  const getFilterText = () => {
+    if (likedFilter) return "Liked";
+    if (completedFilter) return "Completed";
+    return "All";
+  };
+
   return (
     <div style={{ padding: "15px" }}>
       <Navbar
-        className="mb-3"
+        className="mb-4"
         style={{
           borderBottom: "solid 1px gray",
           justifyContent: "center",
@@ -71,7 +77,7 @@ function App() {
                   style={{ width: "350px" }}
                 />
                 <NavDropdown
-                  title="Filter by :"
+                  title={`Filter by: ${getFilterText()}`}
                   id={`offcanvasNavbarDropdown-expand`}
                 >
                   <NavDropdown.Item
@@ -79,6 +85,7 @@ function App() {
                       setLikedFilter(false);
                       setCompletedFilter(false);
                     }}
+                    active={!likedFilter && !completedFilter}
                   >
                     All
                   </NavDropdown.Item>
@@ -87,6 +94,7 @@ function App() {
                       setLikedFilter(true);
                       setCompletedFilter(false);
                     }}
+                    active={likedFilter}
                   >
                     Liked
                   </NavDropdown.Item>
@@ -95,6 +103,7 @@ function App() {
                       setLikedFilter(false);
                       setCompletedFilter(true);
                     }}
+                    active={completedFilter}
                   >
                     Completed
                   </NavDropdown.Item>
@@ -102,9 +111,10 @@ function App() {
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
-          <button onClick={handleShow} className="button-add">
-            + Add New Notes
-          </button>
+          <Button onClick={handleShow} variant="warning">
+            <span className="d-none d-md-inline">+ Add New Notes</span>
+            <span className="d-md-none">+</span>
+          </Button>
         </Container>
       </Navbar>
 
@@ -146,9 +156,8 @@ function App() {
               position: "relative",
               margin: "10px 0",
               marginTop: "30px",
-              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
               borderRadius: "12px",
-              border: "none",
+              border: "#d6d6d6 1px solid",
               backgroundColor: "#fff",
               transition: "transform 0.2s ease-in-out",
               cursor: "pointer",
@@ -190,7 +199,7 @@ function App() {
                     <Dropdown.Item onClick={() => toggleComplete(todo.id)}>
                       {todo.isCompleted
                         ? "✓ Mark Incomplete"
-                        : "○ Mark Complete"}
+                        : "  Mark Complete"}
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => deleteTodo(todo.id)}>
                       🗑️ Delete
